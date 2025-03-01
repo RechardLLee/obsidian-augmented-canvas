@@ -101,27 +101,72 @@ export const getResponse = async (
 		isJSON,
 	});
 
-	const response = await fetch("https://api.siliconflow.cn/v1/chat/completions", {
-		method: "POST",
-		headers: {
-			"Authorization": `Bearer ${apiKey}`,
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			model: model || "Qwen/Qwen2.5-7B-Instruct",
-			messages,
-			max_tokens,
-			temperature,
-			response_format: isJSON ? { type: "json_object" } : undefined,
-		}),
-	});
+	try {
+		const response = await fetch("https://api.siliconflow.cn/v1/chat/completions", {
+			method: "POST",
+			headers: {
+				"Authorization": `Bearer ${apiKey}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				model: model || "Qwen/Qwen2.5-7B-Instruct",
+				messages,
+				max_tokens,
+				temperature,
+				// Silicon Flow 可能不支持 response_format，如果不支持可以移除此参数
+				// response_format: isJSON ? { type: "json_object" } : undefined,
+			}),
+		});
 
-	const completion = await response.json();
+		if (!response.ok) {
+			const errorText = await response.text();
+			logDebug("API error response", { status: response.status, errorText });
+			throw new Error(`API request failed: ${response.status} ${errorText}`);
+		}
 
-	logDebug("AI response", { completion });
-	return isJSON
-		? JSON.parse(completion.choices[0].message.content)
-		: completion.choices[0].message.content;
+		const completion = await response.json();
+		logDebug("AI response", { completion });
+
+		if (!completion.choices || !completion.choices[0] || !completion.choices[0].message) {
+			logDebug("Unexpected API response format", { completion });
+			throw new Error("Unexpected API response format");
+		}
+
+		const content = completion.choices[0].message.content;
+		
+		if (isJSON) {
+			try {
+				// 尝试解析 JSON
+				return JSON.parse(content);
+			} catch (e) {
+				logDebug("Failed to parse JSON response", { content, error: e });
+				
+				// 如果解析失败，尝试从文本中提取 JSON
+				const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || 
+								  content.match(/```([\s\S]*?)```/) ||
+								  content.match(/{[\s\S]*}/);
+				
+				if (jsonMatch && jsonMatch[1]) {
+					try {
+						return JSON.parse(jsonMatch[1]);
+					} catch (e2) {
+						logDebug("Failed to parse extracted JSON", { extractedJson: jsonMatch[1], error: e2 });
+					}
+				}
+				
+				// 如果无法解析 JSON，返回一个包含原始内容的对象
+				return { 
+					questions: ["无法生成问题。请尝试使用不同的模型或内容。"],
+					error: "JSON 解析失败" 
+				};
+			}
+		}
+		
+		return content;
+	} catch (error) {
+		logDebug("Error calling API", { error });
+		throw error;
+	}
 };
 
 let count = 0;

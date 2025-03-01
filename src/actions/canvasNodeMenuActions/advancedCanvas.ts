@@ -6,11 +6,10 @@ import { getResponse } from "../../utils/chatgpt";
 import { getActiveCanvas, getActiveCanvasNodes } from "src/utils";
 
 const SYSTEM_PROMPT_QUESTIONS = `
-Generate a list of relevant questions based on the given content.
-Each question should be on a new line.
-Number each question.
-Questions should be open-ended and encourage deeper thinking.
-The response must be in the same language as the input.
+You must respond in this JSON format: {
+	"questions": Follow up questions the user could ask based on the chat history, must be an array
+}
+The questions must be asked in the same language the user used, default to English.
 `.trim();
 
 export const addAskAIButton = async (
@@ -57,28 +56,20 @@ export const handleCallGPT_Questions = async (
 	});
 	if (messages.length <= 1) return;
 
-	try {
-		const response = await getResponse(
-			settings.apiKey,
-			messages,
-			{
-				model: settings.apiModel,
-				max_tokens: settings.maxResponseTokens || undefined,
-				temperature: settings.temperature,
-			}
-		);
+	const gptResponse = await getResponse(
+		settings.apiKey,
+		// settings.apiModel,
+		messages,
+		{
+			model: settings.apiModel,
+			max_tokens: settings.maxResponseTokens || undefined,
+			// max_tokens: getTokenLimit(settings) - tokenCount - 1,
+			temperature: settings.temperature,
+			isJSON: true,
+		}
+	);
 
-		const lines = response.split('\n').filter(line => line.trim());
-		const questions = lines.map(line => {
-			return line.replace(/^\d+[\.\)]\s*/, '').trim();
-		}).filter(q => q.length > 0);
-
-		return questions;
-	} catch (error) {
-		logDebug("Error generating questions:", error);
-		new Notice("Failed to generate questions");
-		return [];
-	}
+	return gptResponse.questions;
 };
 
 const handleRegenerateResponse = async (
@@ -87,10 +78,22 @@ const handleRegenerateResponse = async (
 ) => {
 	const activeNode = getActiveCanvasNodes(app)![0];
 
+	// const canvas = getActiveCanvas(app);
+
+	// // @ts-expect-error
+	// const toNode = activeNode.to.node;
+
+	// console.log({ toNode });
+
+	// canvas!.removeNode(toNode);
+	// canvas?.requestSave();
+
 	const { generateNote } = noteGenerator(
 		app,
 		settings,
+		// @ts-expect-error
 		activeNode.from.node,
+		// @ts-expect-error
 		activeNode.to.node
 	);
 
@@ -106,6 +109,7 @@ export const addRegenerateResponse = async (
 	setTooltip(buttonEl_AskAI, "Regenerate response", {
 		placement: "top",
 	});
+	// TODO
 	setIcon(buttonEl_AskAI, "lucide-rotate-cw");
 	menuEl.appendChild(buttonEl_AskAI);
 
