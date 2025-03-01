@@ -1,5 +1,7 @@
 # Obsidian Augmented Canvas
 
+[English](./README.md)|[简体中文](./README.zh-CN.md)
+
 A plugin for [Obsidian](https://obsidian.md) that "augments" Obsidian Canvas with AI features.
 
 You need a OpenAI API Key to use this plugin, you can input it in the settings. The plugin only works with OpenAI latest model : `gpt-4-1106-preview`
@@ -64,10 +66,3 @@ The content that is send to GPT can be viewed by toggling on the "Debug output" 
 -   [rpggio/obsidian-chat-stream: Obsidian canvas plugin for using AI completion with threads of canvas nodes (github.com)](https://github.com/rpggio/obsidian-chat-stream)
 -   [Quorafind/Obsidian-Collapse-Node: A node collapsing plugin for Canvas in Obsidian. (github.com)](https://github.com/quorafind/obsidian-collapse-node)
 
-## Support
-
-If you are enjoying this plugin then please support my work and enthusiasm by buying me a coffee
-on [https://www.buymeacoffee.com/metacorp](https://www.buymeacoffee.com/metacorp).
-.
-
-<a href="https://www.buymeacoffee.com/metacorp"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=boninall&button_colour=6495ED&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"></a>
