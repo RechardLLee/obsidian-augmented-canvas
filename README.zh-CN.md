@@ -4,7 +4,7 @@
 
 一个为 [Obsidian](https://obsidian.md) 提供 AI 功能增强画布的插件。
 
-您需要 Silicon Flow API 密钥才能使用此插件，可以在设置中输入。该插件可以使用 Silicon Flow 的模型，如 `Qwen/Qwen2.5-7B-Instruct`。您可以在设置中指定任何 Silicon Flow API 支持的模型名称。
+您需要 API 密钥才能使用此插件，可以在设置中输入。默认情况下，该插件可以使用 Silicon Flow 的模型，如 `Qwen/Qwen2.5-7B-Instruct`。您可以在设置中指定任何 API 支持的模型名称。此外，您还可以在设置中自定义 API URL，以连接到使用兼容 API 格式的其他 AI 平台。
 
 ## 主要功能
 

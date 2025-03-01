@@ -4,7 +4,7 @@
 
 A plugin for [Obsidian](https://obsidian.md) that "augments" Obsidian Canvas with AI features.
 
-You need a Silicon Flow API Key to use this plugin, you can input it in the settings. The plugin works with Silicon Flow's models like `Qwen/Qwen2.5-7B-Instruct`. You can specify any model name supported by Silicon Flow API in the settings.
+You need an API Key to use this plugin, which you can input in the settings. The plugin works with Silicon Flow's models like `Qwen/Qwen2.5-7B-Instruct` by default, but you can specify any model name supported by the API in the settings. Additionally, you can customize the API URL in settings to connect to other AI platforms that use a compatible API format.
 
 ## Key Features
 
