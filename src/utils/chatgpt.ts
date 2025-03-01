@@ -9,7 +9,6 @@ export type Message = {
 
 export const streamResponse = async (
 	apiKey: string,
-	// prompt: string,
 	messages: ChatCompletionMessageParam[],
 	{
 		max_tokens,
@@ -29,30 +28,58 @@ export const streamResponse = async (
 		temperature,
 		isJSON: false,
 	});
-	// console.log({ messages, max_tokens });
-	const openai = new OpenAI({
-		apiKey: apiKey,
-		dangerouslyAllowBrowser: true,
+
+	const response = await fetch("https://api.siliconflow.cn/v1/chat/completions", {
+		method: "POST",
+		headers: {
+			"Authorization": `Bearer ${apiKey}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			model: model || "Qwen/Qwen2.5-7B-Instruct",
+			messages,
+			max_tokens,
+			temperature,
+			stream: true,
+		}),
 	});
 
-	const stream = await openai.chat.completions.create({
-		model: model || "gpt-4",
-		messages,
-		stream: true,
-		max_tokens,
-		temperature,
-	});
-	for await (const chunk of stream) {
-		logDebug("AI chunk", { chunk });
-		// console.log({ completionChoice: chunk.choices[0] });
-		cb(chunk.choices[0]?.delta?.content || "");
+	const reader = response.body?.getReader();
+	if (!reader) {
+		throw new Error("Failed to get response reader");
 	}
-	cb(null);
+
+	const decoder = new TextDecoder();
+	while (true) {
+		const { done, value } = await reader.read();
+		if (done) {
+			cb(null);
+			break;
+		}
+
+		const chunk = decoder.decode(value);
+		const lines = chunk.split('\n').filter(line => line.trim());
+		
+		for (const line of lines) {
+			if (line.startsWith('data: ')) {
+				const content = line.slice(6);
+				if (content.trim() === '[DONE]') {
+					continue;
+				}
+				try {
+					const data = JSON.parse(content);
+					cb(data.choices[0]?.delta?.content || "");
+				} catch (e) {
+					logDebug("Error parsing JSON:", { content, error: e });
+					continue;
+				}
+			}
+		}
+	}
 };
 
 export const getResponse = async (
 	apiKey: string,
-	// prompt: string,
 	messages: ChatCompletionMessageParam[],
 	{
 		model,
@@ -74,31 +101,27 @@ export const getResponse = async (
 		isJSON,
 	});
 
-	const openai = new OpenAI({
-		apiKey: apiKey,
-		dangerouslyAllowBrowser: true,
+	const response = await fetch("https://api.siliconflow.cn/v1/chat/completions", {
+		method: "POST",
+		headers: {
+			"Authorization": `Bearer ${apiKey}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			model: model || "Qwen/Qwen2.5-7B-Instruct",
+			messages,
+			max_tokens,
+			temperature,
+			response_format: isJSON ? { type: "json_object" } : undefined,
+		}),
 	});
 
-	// const totalTokens =
-	// 	openaiMessages.reduce(
-	// 		(total, message) => total + (message.content?.length || 0),
-	// 		0
-	// 	) * 2;
-	// console.log({ totalTokens });
-
-	const completion = await openai.chat.completions.create({
-		// model: "gpt-3.5-turbo",
-		model: model || "gpt-4-1106-preview",
-		messages,
-		max_tokens,
-		temperature,
-		response_format: { type: isJSON ? "json_object" : "text" },
-	});
+	const completion = await response.json();
 
 	logDebug("AI response", { completion });
 	return isJSON
-		? JSON.parse(completion.choices[0].message!.content!)
-		: completion.choices[0].message!.content!;
+		? JSON.parse(completion.choices[0].message.content)
+		: completion.choices[0].message.content;
 };
 
 let count = 0;

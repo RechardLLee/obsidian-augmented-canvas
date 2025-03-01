@@ -29,22 +29,21 @@ export class SettingsTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Model")
-			.setDesc("Select the GPT model to use.")
-			.addDropdown((cb) => {
-				getModels().forEach((model) => {
-					cb.addOption(model, model);
-				});
-				cb.setValue(this.plugin.settings.apiModel);
-				cb.onChange(async (value) => {
-					this.plugin.settings.apiModel = value;
-					await this.plugin.saveSettings();
-				});
-			});
+			.setName("AI Model")
+			.setDesc("Enter the model name (e.g. Qwen/Qwen2.5-7B-Instruct)")
+			.addText((text) =>
+				text
+					.setPlaceholder("Enter model name")
+					.setValue(this.plugin.settings.apiModel)
+					.onChange(async (value) => {
+						this.plugin.settings.apiModel = value;
+						await this.plugin.saveSettings();
+					})
+			);
 
 		new Setting(containerEl)
-			.setName("Image Model")
-			.setDesc("Select the GPT model to generate images.")
+			.setName("图像模型")
+			.setDesc("选择用于生成图像的 GPT 模型。")
 			.addDropdown((cb) => {
 				getImageModels().forEach((model) => {
 					cb.addOption(model, model);
@@ -57,13 +56,13 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("API key")
+			.setName("API 密钥")
 			.setDesc(
-				"The API key to use when making requests - Get from OpenAI"
+				"用于发送请求的 API 密钥 - 从 OpenAI 获取"
 			)
 			.addText((text) => {
 				text.inputEl.type = "password";
-				text.setPlaceholder("API Key")
+				text.setPlaceholder("API 密钥")
 					.setValue(this.plugin.settings.apiKey)
 					.onChange(async (value) => {
 						this.plugin.settings.apiKey = value;
@@ -72,11 +71,11 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Youtube API key")
-			.setDesc("The Youtube API key used to fetch captions")
+			.setName("YouTube API 密钥")
+			.setDesc("用于获取字幕的 YouTube API 密钥")
 			.addText((text) => {
 				text.inputEl.type = "password";
-				text.setPlaceholder("API Key")
+				text.setPlaceholder("YouTube API 密钥")
 					.setValue(this.plugin.settings.youtubeApiKey)
 					.onChange(async (value) => {
 						this.plugin.settings.youtubeApiKey = value;
@@ -85,9 +84,9 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Default system prompt")
+			.setName("默认系统提示词")
 			.setDesc(
-				`The system prompt sent with each request to the API. \n(Note: you can override this by beginning a note stream with a note starting 'SYSTEM PROMPT'. The remaining content of that note will be used as system prompt.)`
+				`发送给 API 的系统提示词。\n(注意: 您可以通过在笔记流开始时添加以'系统提示词'开头的笔记来覆盖此设置。该笔记的剩余内容将被用作系统提示词。)`
 			)
 			.addTextArea((component) => {
 				component.inputEl.rows = 6;
@@ -104,8 +103,8 @@ export class SettingsTab extends PluginSettingTab {
 		this.displaySystemPromptsSettings(containerEl);
 
 		new Setting(containerEl)
-			.setName("Flashcards system prompt")
-			.setDesc(`The system prompt used to generate the flashcards file.`)
+			.setName("闪卡系统提示词")
+			.setDesc(`用于生成闪卡文件的系统提示词。`)
 			.addTextArea((component) => {
 				component.inputEl.rows = 6;
 				// component.inputEl.style.width = "300px";
@@ -119,9 +118,9 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Relevant questions system prompt")
+			.setName("相关问题系统提示词")
 			.setDesc(
-				`The system prompt used to generate relevant questions for the command "Insert relevant questions".`
+				`用于生成相关问题的系统提示词。`
 			)
 			.addTextArea((component) => {
 				component.inputEl.rows = 6;
@@ -138,9 +137,9 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Insert relevant questions files count")
+			.setName("插入相关问题文件数量")
 			.setDesc(
-				'The number of files that are taken into account by the "Insert relevant questions" command.'
+				'"插入相关问题"命令所考虑的文件数量。'
 			)
 			.addText((text) =>
 				text
@@ -158,9 +157,9 @@ export class SettingsTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Max input tokens")
+			.setName("最大输入令牌")
 			.setDesc(
-				"The maximum number of tokens to send (within model limit). 0 means as many as possible"
+				"发送给 API 的最大令牌数（在模型限制内）。0 表示尽可能多的令牌。"
 			)
 			.addText((text) =>
 				text
@@ -175,9 +174,9 @@ export class SettingsTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Max response tokens")
+			.setName("最大输出令牌")
 			.setDesc(
-				"The maximum number of tokens to return from the API. 0 means no limit. (A token is about 4 characters)."
+				"API 返回的最大令牌数。0 表示没有限制。（一个令牌大约是 4 个字符。）"
 			)
 			.addText((text) =>
 				text
@@ -194,7 +193,7 @@ export class SettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Max depth")
 			.setDesc(
-				"The maximum depth of ancestor notes to include. 0 means no limit."
+				"包含祖先笔记的最大深度。0 表示没有限制。"
 			)
 			.addText((text) =>
 				text
@@ -209,8 +208,8 @@ export class SettingsTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Temperature")
-			.setDesc("Sampling temperature (0-2). 0 means no randomness.")
+			.setName("温度")
+			.setDesc("采样温度（0-2）。0 表示没有随机性。")
 			.addText((text) =>
 				text
 					.setValue(this.plugin.settings.temperature.toString())
@@ -239,8 +238,8 @@ export class SettingsTab extends PluginSettingTab {
 		// 	});
 
 		new Setting(containerEl)
-			.setName("Debug output")
-			.setDesc("Enable debug output in the console")
+			.setName("调试输出")
+			.setDesc("在控制台中启用调试输出")
 			.addToggle((component) => {
 				component
 					.setValue(this.plugin.settings.debug)
@@ -256,10 +255,10 @@ export class SettingsTab extends PluginSettingTab {
 		const setting = new Setting(containerEl);
 
 		setting
-			.setName("Add system prompts")
+			.setName("添加系统提示词")
 			.setClass("augmented-canvas-setting-item")
 			.setDesc(
-				`Create new highlight colors by providing a color name and using the color picker to set the hex code value. Don't forget to save the color before exiting the color picker. Drag and drop the highlight color to change the order for your highlighter component.`
+				`通过提供颜色名称并使用颜色选择器设置十六进制代码值来创建新的高亮颜色。不要忘记在颜色选择器退出之前保存颜色。拖动高亮颜色以更改高亮组件的顺序。`
 			);
 
 		const nameInput = new TextComponent(setting.controlEl);
@@ -288,10 +287,10 @@ export class SettingsTab extends PluginSettingTab {
 
 					if (!name || !prompt) {
 						name && !prompt
-							? new Notice("Prompt missing")
+							? new Notice("缺少提示词")
 							: !name && prompt
-							? new Notice("Name missing")
-							: new Notice("Values missing"); // else
+							? new Notice("缺少名称")
+							: new Notice("缺少值"); // else
 						return;
 					}
 
@@ -336,7 +335,7 @@ export class SettingsTab extends PluginSettingTab {
 						this.display();
 					} else {
 						buttonEl.stopImmediatePropagation();
-						new Notice("This system prompt name already exists");
+						new Notice("此系统提示词名称已存在");
 					}
 				});
 		});
@@ -382,7 +381,7 @@ export class SettingsTab extends PluginSettingTab {
 							);
 						await this.plugin.saveSettings();
 						this.display();
-						new Notice("System prompt updated");
+						new Notice("系统提示词已更新");
 					});
 
 				const buttonDelete = new ButtonComponent(listElement);
@@ -401,7 +400,7 @@ export class SettingsTab extends PluginSettingTab {
 							);
 						await this.plugin.saveSettings();
 						this.display();
-						new Notice("System prompt deleted");
+						new Notice("系统提示词已删除");
 					});
 			}
 		);

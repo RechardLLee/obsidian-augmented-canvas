@@ -123,7 +123,7 @@ Priories questions that connect different topics together.
 
 export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
 	apiKey: "",
-	apiModel: CHAT_MODELS.GPT_4_0.name,
+	apiModel: "Qwen/Qwen2.5-7B-Instruct",
 	temperature: 1,
 	systemPrompt: DEFAULT_SYSTEM_PROMPT,
 	debug: false,

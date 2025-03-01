@@ -4,7 +4,7 @@
 
 一个为 [Obsidian](https://obsidian.md) 提供 AI 功能增强画布的插件。
 
-您需要 OpenAI API 密钥才能使用此插件，可以在设置中输入。该插件仅适用于 OpenAI 的最新模型：`gpt-4-1106-preview`
+您需要 Silicon Flow API 密钥才能使用此插件，可以在设置中输入。该插件可以使用 Silicon Flow 的模型，如 `Qwen/Qwen2.5-7B-Instruct`。您可以在设置中指定任何 Silicon Flow API 支持的模型名称。
 
 ## 主要功能
 

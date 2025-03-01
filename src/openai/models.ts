@@ -27,6 +27,10 @@ export const CHAT_MODELS = {
 	// 	name: "gpt-4-32k",
 	// 	tokenLimit: 32768,
 	// },
+	QWEN: {
+		name: "Qwen/Qwen2.5-7B-Instruct",
+		tokenLimit: 128000,
+	},
 };
 
 export const IMAGE_MODELS = {
