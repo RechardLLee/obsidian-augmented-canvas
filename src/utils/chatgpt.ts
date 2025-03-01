@@ -21,15 +21,20 @@ export const streamResponse = async (
 	} = {},
 	cb: any
 ) => {
+	// Get the settings to access the API URL
+	// You'll need to pass the settings from the calling code
+	const settings = (window as any).augmentedCanvasPlugin.settings;
+	
 	logDebug("Calling AI :", {
 		messages,
 		model,
 		max_tokens,
 		temperature,
 		isJSON: false,
+		apiUrl: settings.apiUrl,
 	});
 
-	const response = await fetch("https://api.siliconflow.cn/v1/chat/completions", {
+	const response = await fetch(settings.apiUrl, {
 		method: "POST",
 		headers: {
 			"Authorization": `Bearer ${apiKey}`,
@@ -93,16 +98,20 @@ export const getResponse = async (
 		isJSON?: boolean;
 	} = {}
 ) => {
+	// Get the settings to access the API URL
+	const settings = (window as any).augmentedCanvasPlugin.settings;
+	
 	logDebug("Calling AI :", {
 		messages,
 		model,
 		max_tokens,
 		temperature,
 		isJSON,
+		apiUrl: settings.apiUrl,
 	});
 
 	try {
-		const response = await fetch("https://api.siliconflow.cn/v1/chat/completions", {
+		const response = await fetch(settings.apiUrl, {
 			method: "POST",
 			headers: {
 				"Authorization": `Bearer ${apiKey}`,

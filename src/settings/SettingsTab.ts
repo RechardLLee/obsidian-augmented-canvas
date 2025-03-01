@@ -56,6 +56,21 @@ export class SettingsTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
+			.setName("API URL")
+			.setDesc(
+				"The chat completions URL to use. Change this to connect to other AI platforms."
+			)
+			.addText((text) => {
+				text.inputEl.style.width = "300px";
+				text.setPlaceholder("API URL")
+					.setValue(this.plugin.settings.apiUrl)
+					.onChange(async (value) => {
+						this.plugin.settings.apiUrl = value;
+						await this.plugin.saveSettings();
+					});
+			});
+
+		new Setting(containerEl)
 			.setName("API 密钥")
 			.setDesc(
 				"用于发送请求的 API 密钥 - 从 OpenAI 获取"
@@ -222,20 +237,6 @@ export class SettingsTab extends PluginSettingTab {
 					})
 			);
 
-		// new Setting(containerEl)
-		// 	.setName("API URL")
-		// 	.setDesc(
-		// 		"The chat completions URL to use. You probably won't need to change this."
-		// 	)
-		// 	.addText((text) => {
-		// 		text.inputEl.style.width = "300px";
-		// 		text.setPlaceholder("API URL")
-		// 			.setValue(this.plugin.settings.apiUrl)
-		// 			.onChange(async (value) => {
-		// 				this.plugin.settings.apiUrl = value;
-		// 				await this.plugin.saveSettings();
-		// 			});
-		// 	});
 
 		new Setting(containerEl)
 			.setName("调试输出")

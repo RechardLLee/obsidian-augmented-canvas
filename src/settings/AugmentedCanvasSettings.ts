@@ -87,6 +87,11 @@ export interface AugmentedCanvasSettings {
 	 * The Youtube API Key
 	 */
 	youtubeApiKey: string;
+
+	/**
+	 * The API URL for chat completions
+	 */
+	apiUrl: string;
 }
 // export const DEFAULT_SYSTEM_PROMPT = `
 // You are a critical-thinking assistant bot.
@@ -138,6 +143,7 @@ export const DEFAULT_SETTINGS: AugmentedCanvasSettings = {
 	imageModel: IMAGE_MODELS.DALL_E_3.name,
 	imagesPath: undefined,
 	youtubeApiKey: "",
+	apiUrl: "https://api.siliconflow.cn/v1/chat/completions",
 };
 
 export function getModels() {

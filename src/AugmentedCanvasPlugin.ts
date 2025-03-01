@@ -56,6 +56,9 @@ export default class AugmentedCanvasPlugin extends Plugin {
 		await this.loadSettings();
 		this.addSettingTab(new SettingsTab(this.app, this));
 
+		// Add this line to make settings accessible globally
+		(window as any).augmentedCanvasPlugin = this;
+
 		// this.registerCommands();
 		// this.registerCanvasEvents();
 		// this.registerCustomIcons();
