@@ -1,0 +1,13 @@
+{
+	"id": "advance-canvas",
+	"name": "Advance Canvas",
+	"version": "0.0.10",
+	"minAppVersion": "1.1.0",
+	"description": "Obsidian Canvas with AI features.",
+	"author": "木子不是木子狸",
+	"authorUrl": "https://github.com/RechardLLee/obsidian-augmented-canvas",
+	"fundingUrl": {
+		"Buy Me a Coffee": ""
+	},
+	"isDesktopOnly": false
+}
